@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "express": "^4.21.2",
+    "firebase": "^11.2.0",
+    "telegram": "^2.26.16"
+  }
+}
