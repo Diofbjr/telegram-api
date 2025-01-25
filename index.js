@@ -1,13 +1,16 @@
 const express = require("express");
+const cors = require("cors");
 const { initTelegramClient, sendCode, signIn } = require("./authManager");
 
 const app = express();
 app.use(express.json());
 
+// Configurar CORS para permitir todas as origens
+app.use(cors());
+
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
   const { phoneNumber } = req.body;
-
 
   if (!phoneNumber) {
     return res.status(400).json({ error: "Número de telefone é obrigatório." });
