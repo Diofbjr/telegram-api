@@ -1,22 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const { initTelegramClient, sendCode, signIn } = require("./authManager");
-const { db } = require("./firebaseConfig");
 
 const app = express();
 app.use(express.json());
 
-// Configurar CORS para permitir apenas a origem do frontend (localhost:3000)
-const corsOptions = {
-  origin: "http://localhost:3000", // Permitir apenas este domínio
-  methods: "GET,POST,OPTIONS", // Métodos permitidos
-  allowedHeaders: "Content-Type,Authorization", // Cabeçalhos permitidos
-};
-
-app.use(cors(corsOptions));
-
-// Lidar com pré-requisições (preflight requests) para todos os endpoints
-app.options("*", cors(corsOptions));
+// Configurar CORS para permitir todas as origens
+app.use(cors());
 
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
@@ -49,22 +39,6 @@ app.post("/login", async (req, res) => {
     res.status(200).json({ message: "Login realizado com sucesso." });
   } catch (error) {
     res.status(500).json({ error: `Erro ao realizar login: ${error.message}` });
-  }
-});
-
-// Endpoint para verificar sessão
-app.get("/check-session/:phoneNumber", async (req, res) => {
-  const { phoneNumber } = req.params;
-
-  try {
-    const sessionDoc = await db.collection("sessions").doc(phoneNumber).get();
-    if (!sessionDoc.exists) {
-      return res.status(404).json({ error: "Sessão não encontrada." });
-    }
-
-    res.status(200).json({ session: sessionDoc.data().session });
-  } catch (error) {
-    res.status(500).json({ error: `Erro ao verificar sessão: ${error.message}` });
   }
 });
 
