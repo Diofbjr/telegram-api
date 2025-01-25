@@ -6,8 +6,17 @@ const { db } = require("./firebaseConfig");
 const app = express();
 app.use(express.json());
 
-// Configurar CORS para permitir todas as origens
-app.use(cors());
+// Configurar CORS para permitir apenas a origem do frontend (localhost:3000)
+const corsOptions = {
+  origin: "http://localhost:3000", // Permitir apenas este domínio
+  methods: "GET,POST,OPTIONS", // Métodos permitidos
+  allowedHeaders: "Content-Type,Authorization", // Cabeçalhos permitidos
+};
+
+app.use(cors(corsOptions));
+
+// Lidar com pré-requisições (preflight requests) para todos os endpoints
+app.options("*", cors(corsOptions));
 
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
