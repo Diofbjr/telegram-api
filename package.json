@@ -3,6 +3,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "firebase": "^11.2.0",
+    "firebase-admin": "^13.0.2",
     "telegram": "^2.26.16"
   }
 }
