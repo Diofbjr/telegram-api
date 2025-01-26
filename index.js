@@ -1,12 +1,28 @@
 const express = require("express");
 const cors = require("cors");
 const { initTelegramClient, sendCode, signIn } = require("./authManager");
+const { PrismaClient } = require("@prisma/client");
+
+
 
 const app = express();
 app.use(express.json());
-
+const prisma = new PrismaClient();
 // Configurar CORS para permitir todas as origens
 app.use(cors());
+
+app.post("/signup", async (req, res)=>{
+  const {email, password, name} = req.body;
+  
+  const user = await prisma.user.create({
+    data:{
+      name: name,
+      email: email,
+      password:password
+    }
+  })
+  return res.status(201).json({user})
+})
 
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
@@ -24,6 +40,10 @@ app.post("/send-code", async (req, res) => {
     res.status(500).json({ error: `Erro ao enviar código: ${error.message}` });
   }
 });
+
+app.post("/signin", async (req, res)=>{
+
+})
 
 // Endpoint para realizar o login
 app.post("/login", async (req, res) => {
