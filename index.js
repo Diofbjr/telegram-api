@@ -1,19 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const { initTelegramClient, sendCode, signIn } = require("./authManager");
-const admin = require("./firebase"); // Importe o Firebase inicializado
 
 const app = express();
 app.use(express.json());
 
 // Configurar CORS para permitir todas as origens
-app.use(
-  cors({
-    origin: "*", // Permite todas as origens
-    methods: "GET,POST,PUT,DELETE", // Métodos permitidos
-    allowedHeaders: "Content-Type,Authorization", // Cabeçalhos permitidos
-  })
-);
+app.use(cors());
 
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
@@ -42,16 +35,7 @@ app.post("/login", async (req, res) => {
 
   try {
     const client = await initTelegramClient(phoneNumber);
-    const user = await signIn(client, phoneNumber, code);
-
-    // Enviar dados de login para o Firebase
-    const db = admin.firestore();
-    await db.collection("logins").doc(phoneNumber).set({
-      phoneNumber,
-      session: client.session.save(), // Salva a sessão para uso futuro
-      timestamp: admin.firestore.FieldValue.serverTimestamp()
-    });
-
+    await signIn(client, phoneNumber, code);
     res.status(200).json({ message: "Login realizado com sucesso." });
   } catch (error) {
     res.status(500).json({ error: `Erro ao realizar login: ${error.message}` });
