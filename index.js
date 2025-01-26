@@ -7,7 +7,13 @@ const app = express();
 app.use(express.json());
 
 // Configurar CORS para permitir todas as origens
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Permite todas as origens
+    methods: "GET,POST,PUT,DELETE", // Métodos permitidos
+    allowedHeaders: "Content-Type,Authorization", // Cabeçalhos permitidos
+  })
+);
 
 // Endpoint para enviar o código de verificação
 app.post("/send-code", async (req, res) => {
