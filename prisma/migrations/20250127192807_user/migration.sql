@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "expires_in" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "premium" BOOLEAN NOT NULL DEFAULT false;

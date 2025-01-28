@@ -18,6 +18,8 @@ model User{
   email String @unique
   password String
   name String?
+  premium Boolean @default(false)
+  expires_in DateTime?
   phone Phone[]
 }
 
