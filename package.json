@@ -6,6 +6,8 @@
     "express": "^4.21.2",
     "firebase": "^11.2.0",
     "firebase-admin": "^13.0.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "prisma": "^6.2.1",
     "telegram": "^2.26.16"
   }
