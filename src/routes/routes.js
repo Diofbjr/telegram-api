@@ -2,10 +2,15 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
-const { Authenticate } = require("./signin");
-const { initTelegramClient, sendCode, signIn } = require("./authManager");
+const { Authenticate } = require("../services/authenticate");
+const {
+  initTelegramClient,
+  sendCode,
+  signIn,
+} = require("../services/authManagerNumber");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middlewares/authmiddleware");
 
 const router = express.Router(); // Use `router` para definir as rotas
 const prisma = new PrismaClient();
@@ -48,20 +53,25 @@ router.post("/signin", async (req, res) => {
 });
 
 // Rota para enviar código de verificação
-router.post("/send-code", async (req, res) => {
+router.post("/send-code", authMiddleware, async (req, res) => {
   const loginSchema = Joi.object({
-    token: Joi.string().required(),
     phoneNumber: Joi.string().min(8).required(),
   });
+  const bearerToken = req.headers.authorization;
+  // Verifica se o token existe e remove o prefixo "Bearer"
+  const token =
+    bearerToken && bearerToken.startsWith("Bearer ")
+      ? bearerToken.slice(7)
+      : null;
   const data = req.body;
-  console.log(data);
+
   const { error } = loginSchema.validate(data);
 
   if (error) {
     return res.status(404).json({ message: error.details[0].message });
   }
-  const userId = jwt.decode(data.token);
-  console.log(userId);
+  const userId = jwt.decode(token);
+  console.log(token);
 
   if (!data.phoneNumber) {
     return res.status(400).json({ error: "Número de telefone é obrigatório." });
@@ -79,20 +89,25 @@ router.post("/send-code", async (req, res) => {
 });
 
 // Rota para login com código de verificação
-router.post("/login", async (req, res) => {
+router.post("/login", authMiddleware, async (req, res) => {
   const loginSchema = Joi.object({
-    token: Joi.string().required(),
     phoneNumber: Joi.string().min(8).required(),
     code: Joi.string().required(),
   });
   const data = req.body;
+  const bearerToken = req.headers.authorization;
+  // Verifica se o token existe e remove o prefixo "Bearer"
+  const token =
+    bearerToken && bearerToken.startsWith("Bearer ")
+      ? bearerToken.slice(7)
+      : null;
   const { error } = loginSchema.validate(data);
 
   if (error) {
     return res.status(404).json({ message: error.details[0].message });
   }
-  const userId = jwt.decode(data.token);
-
+  const userId = jwt.decode(token);
+  console.log(userId);
   if (!data.phoneNumber || !data.code) {
     return res
       .status(400)
