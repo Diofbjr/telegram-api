@@ -13,32 +13,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @id @default(uuid())
-  email String @unique
-  password String
-  name String?
-  premium Boolean @default(false)
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique 
+  password   String
+  name       String?
+  premium    Boolean   @default(false)
   expires_in DateTime?
-  phone Phone[]
+  phone      Phone[]
 }
 
-model Phone{
-  id String @id @default(uuid())
-  number String
-  code Int
+model Phone {
+  id       String   @id @default(uuid())
+  number   String   @unique
+  code     Int
   security String?
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
-  groups Groups[]
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId   String
+  groups   Groups[]
 }
 
-model Groups{
-  id String @id @default(uuid())
-  from String 
-  to String
-  name String
-  phone Phone @relation(fields: [phoneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  phoneId String
+model Groups {
+  id         String   @id @default(uuid())
+  from       String
+  to         String
+  name       String
+  phone      Phone    @relation(fields: [phoneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  phoneId    String
   created_at DateTime @default(now())
 }
