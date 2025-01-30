@@ -28,6 +28,7 @@ class Login {
     if (error) {
       return res.status(404).json({ message: error.details[0].message });
     }
+
     const userId = jwt.decode(token);
 
     if (!data.phoneNumber || !data.code) {
@@ -35,10 +36,35 @@ class Login {
         .status(400)
         .json({ error: "Número de telefone e código são obrigatórios." });
     }
-    const user = await prisma.user.findFirst({ where: { id: userId.id } });
+    //Verifiações
+    const user = await prisma.user.findFirst({
+      where: { id: userId.id },
+      include: { phone: true },
+    });
     if (!user) {
       return res.status(404).json({ message: "User not founded" });
     }
+    if (user.phone[0] != null) {
+      if (user.premium === null) {
+        return res.status(403).json({
+          message: "Only premium users can register more than 1 number",
+        });
+      }
+    }
+    if (user.phone.length > 3) {
+      return res.status(403).json({
+        message: "you cannot register more than 3 numbers",
+      });
+    }
+    const numberInUse = await prisma.phone.findFirst({
+      where: { number: data.phoneNumber },
+    });
+    if (numberInUse) {
+      return res.status(403).json({
+        message: "Number in use",
+      });
+    }
+
     try {
       const client = await initTelegramClient(data.phoneNumber);
 

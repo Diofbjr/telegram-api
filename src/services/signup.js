@@ -19,6 +19,12 @@ class Signup {
     try {
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      const userExists = await prisma.user.findFirst({
+        where: { email: email },
+      });
+      if (userExists) {
+        return res.status(500).json({ error: "Email in use" });
+      }
       const user = await prisma.user.create({
         data: {
           name: name,
