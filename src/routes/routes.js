@@ -6,6 +6,7 @@ const { Signup } = require("../services/signup");
 const { SendCode } = require("../services/sendCode");
 const { Login } = require("../services/login");
 const { UpdateUser } = require("../services/updateUser");
+const { DeleteNumber } = require("../services/deleteNumber");
 
 const router = express.Router(); // Use `router` para definir as rotas
 
@@ -14,6 +15,7 @@ const signup = new Signup();
 const sendcode = new SendCode();
 const login = new Login();
 const updateUser = new UpdateUser();
+const deleteNumber = new DeleteNumber();
 
 // Middleware CORS
 router.use(cors());
@@ -61,6 +63,15 @@ router.post("/login", authMiddleware, async (req, res) => {
 router.put("/update-user", authMiddleware, async (req, res) => {
   try {
     await updateUser.updateuser(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro interno no servidor." });
+  }
+});
+
+router.delete("/delete-number", authMiddleware, async (req, res) => {
+  try {
+    await deleteNumber.deleteNumber(req, res);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro interno no servidor." });
