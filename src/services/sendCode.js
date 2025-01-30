@@ -25,7 +25,6 @@ class SendCode {
     if (error) {
       return res.status(404).json({ message: error.details[0].message });
     }
-    const userId = jwt.decode(token);
 
     if (!data.phoneNumber) {
       return res

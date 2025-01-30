@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/authmiddleware");
 const { Signup } = require("../services/signup");
 const { SendCode } = require("../services/sendCode");
 const { Login } = require("../services/login");
+const { UpdateUser } = require("../services/updateUser");
 
 const router = express.Router(); // Use `router` para definir as rotas
 
@@ -12,6 +13,7 @@ const authenticate = new Authenticate();
 const signup = new Signup();
 const sendcode = new SendCode();
 const login = new Login();
+const updateUser = new UpdateUser();
 
 // Middleware CORS
 router.use(cors());
@@ -50,6 +52,15 @@ router.post("/send-code", authMiddleware, async (req, res) => {
 router.post("/login", authMiddleware, async (req, res) => {
   try {
     await login.login(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro interno no servidor." });
+  }
+});
+
+router.put("/update-user", authMiddleware, async (req, res) => {
+  try {
+    await updateUser.updateuser(req, res);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro interno no servidor." });
