@@ -21,7 +21,7 @@ class DeleteUser {
         },
       });
       const deletionDate = new Date();
-      deletionDate.setDate(deletionDate.getDate() + 30);
+      deletionDate.setDate(deletionDate.getDate() + 1);
 
       await prisma.user.update({
         where: { id: userId.id },
