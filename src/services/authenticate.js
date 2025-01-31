@@ -20,7 +20,7 @@ class Authenticate {
       return res.status(404).json({ message: error.details[0].message });
     }
 
-    const userExists = await prisma.user.findFirst({
+    let userExists = await prisma.user.findFirst({
       where: { email: data.email },
     });
     if (!userExists) {
@@ -35,6 +35,10 @@ class Authenticate {
 
     const token = sign({ id: userExists.id }, process.env.SECRET, {
       expiresIn: "1h",
+    });
+    userExists = await prisma.user.update({
+      where: { email: data.email },
+      data: { deletion_date: null },
     });
 
     return res.status(200).json({ userExists, token });

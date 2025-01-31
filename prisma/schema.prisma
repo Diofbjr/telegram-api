@@ -19,6 +19,7 @@ model User {
   password   String
   name       String?
   premium    Boolean   @default(false)
+  deletion_date           DateTime?
   expires_in DateTime?
   phone      Phone[]
 }
