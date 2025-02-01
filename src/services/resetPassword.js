@@ -40,8 +40,23 @@ class PasswordReset {
       // Envio de e-mail comentado para futura implementação
       // -------------------
       /*
-      const resetLink = `http://seusite.com/reset-password?token=${resetToken}`;
-      await sendEmail(email, "Redefinição de Senha", `Clique no link para redefinir sua senha: ${resetLink}`);
+       const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  // E-mail para o usuário com o link de reset
+  const resetLink = `http://seusite.com/reset-password?token=${token}`;
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Reset de Senha",
+    text: `Clique no link para resetar sua senha: ${resetLink}`,
+  };
+
       */
 
       // Retornar o token no JSON para testes
