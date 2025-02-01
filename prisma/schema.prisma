@@ -20,6 +20,8 @@ model User {
   name       String?
   premium    Boolean   @default(false)
   deletion_date           DateTime?
+  resetToken        String?  // Token para reset de senha
+  resetTokenExpiry  DateTime? // Data de expiração do token
   expires_in DateTime?
   phone      Phone[]
 }

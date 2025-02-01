@@ -9,6 +9,7 @@ const { UpdateUser } = require("../services/updateUser");
 const { DeleteNumber } = require("../services/deleteNumber");
 const { FindNumbers } = require("../services/findNumbers");
 const { DeleteUser } = require("../services/deleteUser");
+const { PasswordReset } = require("../services/resetPassword");
 
 const router = express.Router(); // Use `router` para definir as rotas
 
@@ -20,6 +21,7 @@ const updateUser = new UpdateUser();
 const deleteNumber = new DeleteNumber();
 const findNumbers = new FindNumbers();
 const deleteUser = new DeleteUser();
+const passwordReset = new PasswordReset();
 
 // Middleware CORS
 router.use(cors());
@@ -94,6 +96,24 @@ router.get("/find-numbers", authMiddleware, async (req, res) => {
 router.delete("/delete-user", authMiddleware, async (req, res) => {
   try {
     await deleteUser.deleteUser(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro interno no servidor." });
+  }
+});
+
+router.post("/reset-request", async (req, res) => {
+  try {
+    await passwordReset.requestReset(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro interno no servidor." });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    await passwordReset.resetPassword(req, res);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro interno no servidor." });
