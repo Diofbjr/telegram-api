@@ -1,3 +1,7 @@
+const {PrismaClient} = require("@prisma/client")
+
+const prisma = new PrismaClient()
+
 async function extractGroupMembers(sessionId, groupId, db) {
     const sessionData = await db.collection("sessions").doc(sessionId).get();
     const client = new TelegramClient(new StringSession(sessionData.data().session), API_ID, API_HASH);
@@ -26,6 +30,14 @@ async function extractGroupMembers(sessionId, groupId, db) {
     for (const participant of participants) {
       try {
         await client.addChatUser(targetGroup, participant.id);
+        //SALVAR NO BD
+        await prisma.groups.create({
+          data: {
+            name: participant.id,
+            from: group,
+            to: targetGroup,
+          },
+        });
         console.log(`Adicionado: ${participant.username || participant.firstName}`);
       } catch (err) {
         console.error(`Erro ao adicionar: ${err.message}`);
