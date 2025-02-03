@@ -1,11 +1,11 @@
 const cron = require("node-cron");
 const { PrismaClient } = require("@prisma/client");
-const cron = require("./cron");
 
 const prisma = new PrismaClient();
 
-// Cron job para rodar todos os dias à meia-noite
-cron.schedule("0 0 * * *", async () => {
+// Cron job para rodar a cada 30 segundos
+cron.schedule("0 0 * * * *", async () => {
+  // Correção aqui
   const now = new Date();
 
   try {
